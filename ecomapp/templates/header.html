@@ -1,0 +1,187 @@
+{%load static%}
+<!-- Header Section Begin -->
+<header class="header-section">
+    <div class="header-top">
+        <div class="container">
+            <div class="ht-left">
+                <div class="mail-service">
+                    <i class=" fa fa-envelope"></i>
+                    allfamousbd4@gmail.com
+                </div>
+                <div class="phone-service">
+                    <i class=" fa fa-phone"></i>
+                    01721222777
+                </div>
+            </div>
+            <div class="ht-right">
+                <a href="{%url 'user_login'%}" class="login-panel"><i class="fa fa-user"></i>Login</a>
+                <div class="lan-selector">
+                    <select class="language_drop" name="countries" id="countries" style="width:300px;">
+                        <option value='yt' data-image="{%static ''%}img/flag-1.jpg" data-imagecss="flag yt"
+                            data-title="English">English</option>
+                        <option value='yu' data-image="{%static ''%}img/flag-2.jpg" data-imagecss="flag yu"
+                            data-title="Bangladesh">Bangla</option>
+                    </select>
+                </div>
+                <div class="top-social">
+                    <a href="#"><i class="ti-facebook"></i></a>
+                    <a href="#"><i class="ti-twitter-alt"></i></a>
+                    <a href="#"><i class="ti-linkedin"></i></a>
+                    <a href="#"><i class="ti-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="inner-header">
+            <div class="row">
+                <div class="col-lg-2 col-md-2">
+                    <div class="logo">
+                        <a href="{%url 'home'%}">
+                            <img src="{{setting.icon.url}}" alt="">
+                        </a>
+                    </div>
+                </div>
+                
+                <h3>ALL FAMOUS BD</h3>
+                                   
+                <div class="col-lg-5 col-md-5">
+                    <div class="advanced-search" href="{%url 'SearchView' %}" method="post">
+                        {% csrf_token %}
+                        <button type="button" class="category-btn">
+                        <select name="cat_id"> <!--id="category"-->
+                            
+                            {% load mptt_tags %}
+                            <option value="All Categories">All Categories</option>
+                            
+                            {% recursetree category %}                                                                                
+                            <option value="">{{ node.title }}</option>
+                            {% if not node.is_leaf_node %}
+                            <option value="">{{ children }}</option>
+                            {% endif %}
+                            {% endrecursetree %}                            
+                            
+                            
+                        </select>
+                        </button>
+                        
+                        <div class="input-group">
+                            <input type="text" placeholder="What do you need?" id="query" name="query">
+                            <button type="button"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3" style="max-width: 20% !important;">
+                    <ul class="nav-right">
+                        <li class="heart-icon">
+                            <a href="#">
+                                <i class="icon_heart_alt"></i>
+                                <span>1</span>
+                            </a>
+                        </li>
+                        <li class="cart-icon">
+                            <a href="{%url 'cart_details' %}">
+                                
+                                <i class="icon_bag_alt"></i>
+                                <span>{{p.quantity}}</span>
+                                
+                            </a>                            
+                            <div class="cart-hover">
+                                <div class="select-items">
+                                    
+                                    <table>
+                                        <tbody>
+                                            {% for p in cart_product%} 
+                                            <tr>
+                                                <td class="si-pic"><img src="{{p.product.image.url}}" style="width: 70px; height: 70px;" alt=""></td>
+                                                <td class="si-text">
+                                                    <div class="product-selected">
+                                                        <p>৳{{p.product.new_price}} x {{p.quantity}}</p>
+                                                        <h6>{{p.product.title}}</h6>
+                                                    </div>
+                                                </td>
+                                                <td class="si-close">
+                                                    <a href="{%url 'cart_delete' id=p.id%}"><i class="ti-close"></a></i>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                                <div class="select-total">
+                                    <span>total:</span>
+                                    <h5>৳{{total_amount}}</h5>
+                                </div>
+                                <div class="select-button">
+                                    <a href="{%url 'cart_details' %}" class="primary-btn view-card">VIEW CARD</a>
+                                    <a href="{%url 'OrderCart' %}" class="primary-btn checkout-btn">CHECK OUT</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cart-price">৳{{total_amount}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <div class="container">
+            <div class="nav-depart">
+                <div class="depart-btn">
+                    <i class="ti-menu"></i>
+                    <span>All Category</span>
+                    {% load mptt_tags %}
+                    <ul class="depart-hover">                        
+                        {% recursetree category %}
+                        <li class=""><a href="{%url 'category_product' id=node.id slug=node.slug%}">{{ node.title }}</a>
+                            {% if not node.is_leaf_node %}
+                            <ul>
+                            <li><a href="{%url 'category_product' id=node.id slug=node.slug%}">{{ children }}</a></li>
+                            </ul>
+                            {% endif %}
+                        </li>                        
+                        {% endrecursetree %}
+                    </ul>
+                </div>
+            </div>
+            <nav class="nav-menu mobile-menu">
+                <ul>
+                    <li class="active"><a href="{%url 'home'%}">Home</a></li>
+                    <li><a href="{%url 'shopall'%}">Shop</a></li>
+                    <li><a href="#">Collection</a>
+                        <ul class="dropdown">
+                            <li><a href="#">Saree's</a></li>
+                            <li><a href="#">Sweet's</a></li>
+                            <li><a href="#">Other's</a></li>
+                        </ul>
+                    </li>                    
+                    
+                    <li><a href="{%url 'contact_dat'%}">Contact</a></li>
+                    <li><a href="#">Pages</a>
+                        <ul class="dropdown">
+                            <li><a href="{%url 'cart_details'%}">Shopping Cart</a></li>
+                            <li><a href="./faq.html">Faq</a></li>
+                            {% if user.id is not none %}
+                            <li><a href="{%url 'userprofile' %}"> hi {{request.user.username}}</a></li>                           
+                            <li><a href="{%url 'user_logout'%}">Logout</a></li>
+                            <li><a href="{%url 'OrderCart' %}">Checkout</a></li>
+
+                            {% else %}
+
+
+                            <li><a href="{%url 'user_login'%}">login</a></li>
+                            <li><a href="{%url 'user_register'%}">Register</a></li>                          
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li><a href="{%url 'about'%}">About</a></li>
+                </ul>
+            </nav>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </div>
+
+</header>
+<!-- Header End -->
